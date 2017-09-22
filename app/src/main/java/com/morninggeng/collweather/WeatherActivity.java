@@ -1,5 +1,6 @@
 package com.morninggeng.collweather;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Build;
@@ -21,6 +22,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.morninggeng.collweather.db.Forecast;
 import com.morninggeng.collweather.db.Weather;
+import com.morninggeng.collweather.service.AutoUpdateService;
 import com.morninggeng.collweather.util.HttpUtil;
 import com.morninggeng.collweather.util.Utility;
 
@@ -167,6 +169,9 @@ public class WeatherActivity extends AppCompatActivity {
                             editor.putString("weather", responseText);
                             editor.apply();
                             shwoWeatherInfo(weather);
+                            // 开启服务进行后台数据更新
+                            Intent intent = new Intent(WeatherActivity.this, AutoUpdateService.class);
+                            startService(intent);
                         } else {
                             Toast.makeText(WeatherActivity.this, "获取天气信息失败", Toast.LENGTH_SHORT).show();
                         }

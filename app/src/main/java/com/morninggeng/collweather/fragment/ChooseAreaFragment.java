@@ -8,7 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -22,6 +22,8 @@ import com.morninggeng.collweather.db.County;
 import com.morninggeng.collweather.db.Province;
 import com.morninggeng.collweather.util.HttpUtil;
 import com.morninggeng.collweather.util.Utility;
+import com.nineoldandroids.view.ViewHelper;
+import com.nineoldandroids.view.ViewPropertyAnimator;
 
 import org.litepal.crud.DataSupport;
 
@@ -32,6 +34,7 @@ import java.util.List;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
+
 
 public class ChooseAreaFragment extends Fragment {
 
@@ -51,7 +54,7 @@ public class ChooseAreaFragment extends Fragment {
 
     private ListView listView;
 
-    private ArrayAdapter<String> adapter;
+    private MyAdpter adapter;
 
     private List<String> dataList = new ArrayList<>();
 
@@ -92,9 +95,54 @@ public class ChooseAreaFragment extends Fragment {
         titleText = (TextView) view.findViewById(R.id.title_text);
         backButton = (Button) view.findViewById(R.id.back_button);
         listView = (ListView) view.findViewById(R.id.list_view);
-        adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, dataList);
+        listView.setDivider(null);//去除listview的下划线
+        // adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, dataList);
+        adapter = new MyAdpter();
         listView.setAdapter(adapter);
         return view;
+    }
+
+    public class MyAdpter extends BaseAdapter {
+
+        @Override
+        public int getCount() {
+            return dataList.size();
+        }
+
+        @Override
+        public Object getItem(int position) {
+            return null;
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return position;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            ViewHolder holder = null;
+            if (convertView == null) {
+                convertView = View.inflate(getContext(), R.layout.listview_item, null);
+                holder = new ViewHolder();
+                holder.textView = (TextView) convertView.findViewById(R.id.textView);
+                convertView.setTag(holder);
+            } else {
+                holder = (ViewHolder) convertView.getTag();
+            }
+            // 加载时执行动画操作
+            ViewHelper.setScaleX(convertView, 0.2f);
+            ViewHelper.setScaleY(convertView, 0.2f);
+            ViewPropertyAnimator.animate(convertView).scaleX(1).setDuration(350).start();
+            ViewPropertyAnimator.animate(convertView).scaleY(1).setDuration(350).start();
+            // 加载文字信息
+            holder.textView.setText(dataList.get(position));
+            return convertView;
+        }
+    }
+
+    static class ViewHolder {
+        public TextView textView;
     }
 
     @Override
