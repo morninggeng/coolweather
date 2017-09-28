@@ -72,7 +72,9 @@ public class WeatherActivity extends AppCompatActivity {
     @InjectView(R.id.drawer_layout)
     public DrawerLayout drawerLayout;
 
-    public  String weatherId;
+    public String weatherId;
+    @InjectView(R.id.weather_state)
+    ImageView weatherState;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -193,6 +195,16 @@ public class WeatherActivity extends AppCompatActivity {
         String updateTime = weather.basic.update.updateTime.split(" ")[1];
         String degree = weather.now.tempearture + "℃";
         String weartherInfo = weather.now.more.info;
+        // 根据天气状态更改图片显示
+        if (weartherInfo.equals("晴")) {
+            weatherState.setImageResource(R.mipmap.sun);
+        } else if (weartherInfo.equals("多云")) {
+            weatherState.setImageResource(R.mipmap.cloudy);
+        } else if (weartherInfo.equals("阴")) {
+            weatherState.setImageResource(R.mipmap.cloud);
+        } else if (weartherInfo.equals("阵雨")) {
+            weatherState.setImageResource(R.mipmap.shower);
+        }
         titleCity.setText(cityName);
         titleUpdateTime.setText(updateTime);
         degreeText.setText(degree);
